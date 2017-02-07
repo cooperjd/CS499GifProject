@@ -73,6 +73,18 @@ public class GifFrameList extends JList {
         m.addElement(frame);
     }
 
+    public void removeGifFrame(GifFrame frame){
+        int[] indices = getSelectedIndices();
+        DefaultListModel m = (DefaultListModel) getModel();
+        m.removeElement(frame);
+        
+    }
+    
+    public void removeAllFrames(){
+        DefaultListModel m = (DefaultListModel) getModel();
+        m.clear();
+    }
+    
     public List<GifFrame> getGifFrames() {
         DefaultListModel m = (DefaultListModel) getModel();
         Object[] a = m.toArray();

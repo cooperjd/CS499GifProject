@@ -9,6 +9,4 @@ public class Constants {
     public static final String CONNECTION_USERNAME = "root";
     //The password of the root user of the database
     public static final String CONNECTION_PASSWORD = "hemsdbaccess";
-    
-    //public static final String IMAGES_PATH = "images/";
 }

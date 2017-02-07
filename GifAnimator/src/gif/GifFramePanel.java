@@ -183,6 +183,10 @@ public class GifFramePanel extends javax.swing.JPanel {
             delay.setText("");
         }
     }
+    
+    public GifFrame getCurrentFrame(){
+        return frame;
+    }
 
     public boolean loop() {
         return loop.isSelected();

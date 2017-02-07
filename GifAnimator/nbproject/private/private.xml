@@ -4,12 +4,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/database/Constants.java</file>
-            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/database/DatabaseDriver.java</file>
-            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/database/Database.java</file>
-            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/authentication/GifDatabase.java</file>
+            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/gif/GifFrameList.java</file>
+            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/gif/GifFramePanel.java</file>
+            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/gif/Gif.java</file>
             <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/gif/Animator.java</file>
             <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/gif/ButtonPanel.java</file>
+            <file>file:/C:/Users/cooperjd/Documents/NetBeansProjects/GIFted-master/GifAnimator/src/gif/GifFrame.java</file>
         </group>
     </open-files>
 </project-private>

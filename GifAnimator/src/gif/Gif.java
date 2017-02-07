@@ -6,9 +6,12 @@ import java.util.*;
 import javax.imageio.*;
 import javax.imageio.metadata.*;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 public final class Gif {
-
+    private static int size = 350;
+    
     private Gif() {}
 
     public static void write(List<GifFrame> frames, boolean loopContinuously, File file)
@@ -88,6 +91,39 @@ public final class Gif {
             }
             
             frames.add(new GifFrame(image, delay * 10));
+        }
+        
+        return frames;
+    }
+    
+    public static List<GifFrame> readSingleImage(File file, String format) throws IOException {
+        ImageReader reader = ImageIO.getImageReadersByFormatName(format).next();
+        reader.setInput(ImageIO.createImageInputStream(file));
+        
+        int numImages = reader.getNumImages(true);
+        
+        List<GifFrame> frames = new ArrayList<GifFrame>();
+        
+        for (int i = 0; i < numImages; i++) {
+            BufferedImage image = reader.read(i);
+            
+            IIOMetadata metadata = reader.getImageMetadata(i);
+            String fmt = metadata.getNativeMetadataFormatName();
+            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(fmt);
+            
+            IIOMetadataNode gce = getNode(root, "GraphicControlExtension");
+            String delayTime = gce.getAttribute("delayTime");
+            long delay = 500;
+            if (!delayTime.isEmpty()) {
+                delay = Long.parseLong(delayTime);
+            }
+            
+            BufferedImage resizedImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = resizedImage.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.drawImage(image, 0, 0, size, size, null);
+            g2d.dispose();
+            frames.add(new GifFrame(resizedImage, delay * 2));
         }
         
         return frames;

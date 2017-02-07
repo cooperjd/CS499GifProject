@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import database.Database;
+import javax.swing.*;
 
 /**
  *
@@ -44,6 +45,10 @@ public class ButtonPanel extends javax.swing.JPanel {
 
         open = new javax.swing.JButton();
         save = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
+        setPreferredSize(new java.awt.Dimension(468, 44));
 
         open.setText("Open...");
         open.addActionListener(new java.awt.event.ActionListener() {
@@ -59,14 +64,34 @@ public class ButtonPanel extends javax.swing.JPanel {
             }
         });
 
+        jButton1.setLabel("Add Frame");
+        jButton1.setName("addFrame"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setLabel("Delete Frame");
+        jButton2.setName("delFrame"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
                 .addComponent(open)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 222, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(save)
                 .addContainerGap())
         );
@@ -76,18 +101,21 @@ public class ButtonPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(save)
-                    .addComponent(open))
+                    .addComponent(open)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void openActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openActionPerformed
         JFileChooser fc = new JFileChooser();
-        int o = fc.showOpenDialog(getParent());
+        int o = fc.showOpenDialog(null);
         if (o == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             try {
                 if (file.getName().endsWith("gif")) {
+                    animator.removeAllFrames();
                     List<GifFrame> frames = Gif.read(file);
                     for (GifFrame frame : frames) {
                         animator.addGifFrame(frame);
@@ -118,7 +146,7 @@ public class ButtonPanel extends javax.swing.JPanel {
                 return "CompuServe GIF (*.gif)";
             }
         });
-        int o = fc.showSaveDialog(getParent());
+        int o = fc.showSaveDialog(null);
         if (o == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             try {
@@ -130,9 +158,51 @@ public class ButtonPanel extends javax.swing.JPanel {
                         JOptionPane.ERROR_MESSAGE);
             }
         }
+    }     
+    private String getFormat(String format){
+        if(format.endsWith("jpg")){
+             return "jpg";
+        }else{
+            return "png";
+        } 
 }//GEN-LAST:event_saveActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String format;
+        JFileChooser fc = new JFileChooser();
+        int o = fc.showOpenDialog(getParent());
+        if (o == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            try {
+                if (file.getName().endsWith("jpg") || file.getName().endsWith("png")) {
+                    format = getFormat(file.getName());
+                    List<GifFrame> frames = Gif.readSingleImage(file, format);
+                    for (GifFrame frame : frames) {
+                        animator.addGifFrame(frame);
+                    }
+                } else {
+                    BufferedImage image = ImageIO.read(file);
+                    animator.addGifFrame(new GifFrame(image, 500));
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, ex, "Exception",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        animator.removeGifFrame();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton open;
     private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
+    private JButton addFrame = new JButton("Add Frame");
+    private JButton delFrame = new JButton("Delete Frame");
 }
+

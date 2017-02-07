@@ -12,12 +12,13 @@ import javax.swing.event.*;
 public class Animator {
     private GifFrameList list;
     private GifFramePanel panel;
-    private static int size = 100;
+    private static int size = 350;
     public String username;
     
     public Animator(GifFrame[] frames, String username) {
         this.username = username;
         final JFrame f = new JFrame("Gif Animator");
+        f.setPreferredSize(new Dimension(700, 700));
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         panel = new GifFramePanel(this);
@@ -53,6 +54,14 @@ public class Animator {
         list.addGifFrame(frame);
     }
 
+    public void removeGifFrame(){
+        list.removeGifFrame(panel.getCurrentFrame());
+    }
+    
+    public void removeAllFrames(){
+        list.removeAllFrames();
+    }
+    
     public boolean loop() {
         return panel.loop();
     }
