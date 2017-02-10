@@ -26,7 +26,7 @@ public class Database {
 		}
 	}
 	
-        //gets an instance of the database
+        //gets an instance of the database also ensures that there is only one database object
 	public static Database getInstance(){
 		if(instance == null){
 			instance = new Database();
