@@ -59,7 +59,8 @@ public class GifDatabase extends JFrame{
                                 showMessage(1);
                             }else{
                                 dispose();
-                                String[] args = {uname};
+                                String gifPath = gifInfo.getGifPath(uname);
+                                String[] args = {uname, gifPath};
                                 Animator.main(args);
                             }
                         }else{

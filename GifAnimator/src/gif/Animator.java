@@ -6,6 +6,7 @@ import java.awt.image.*;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -15,39 +16,44 @@ public class Animator {
     private static int size = 350;
     public String username;
     
-    public Animator(GifFrame[] frames, String username) {
-        this.username = username;
-        final JFrame f = new JFrame("Gif Animator");
-        f.setPreferredSize(new Dimension(700, 700));
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public Animator(GifFrame[] frames, String[] args) {
+        if(args[1] != ""){
+            String[] newArgs = new String[]{args[0], ""};
+            loadNewAnimator(loadGif(args[1]), newArgs);
+        }else{
+            this.username = args[0];
+            final JFrame f = new JFrame("Gif Animator");
+            f.setPreferredSize(new Dimension(700, 700));
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel = new GifFramePanel(this);
-        f.getContentPane().add(panel);
+            panel = new GifFramePanel(this);
+            f.getContentPane().add(panel);
 
-        JPanel listPanel = new JPanel(new BorderLayout());
+            JPanel listPanel = new JPanel(new BorderLayout());
 
-        list = new GifFrameList(frames);
-        JScrollPane listScrollPane = new JScrollPane(list,
-                JScrollPane.VERTICAL_SCROLLBAR_NEVER,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        int inset = listScrollPane.getHorizontalScrollBar().getHeight();
-        list.setBorder(BorderFactory.createEmptyBorder(0, 0, inset, 0));
-        list.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                GifFrame frame = (GifFrame) list.getSelectedValue();
-                panel.setGifFrame(frame);
-            }
-        });
-        list.setSelectedIndex(0);
-        listPanel.add(listScrollPane);
+            list = new GifFrameList(frames);
+            JScrollPane listScrollPane = new JScrollPane(list,
+                    JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            int inset = listScrollPane.getHorizontalScrollBar().getHeight();
+            list.setBorder(BorderFactory.createEmptyBorder(0, 0, inset, 0));
+            list.addListSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent e) {
+                    GifFrame frame = (GifFrame) list.getSelectedValue();
+                    panel.setGifFrame(frame);
+                }
+            });
+            list.setSelectedIndex(0);
+            listPanel.add(listScrollPane);
 
-        listPanel.add(new ButtonPanel(this), BorderLayout.SOUTH);
+            listPanel.add(new ButtonPanel(this), BorderLayout.SOUTH);
 
-        f.getContentPane().add(listPanel, BorderLayout.SOUTH);
+            f.getContentPane().add(listPanel, BorderLayout.SOUTH);
 
-        f.pack();
-        f.setLocationRelativeTo(null);
-        f.setVisible(true);
+            f.pack();
+            f.setLocationRelativeTo(null);
+            f.setVisible(true);
+        }
     }
     
     public void addGifFrame(GifFrame frame) {
@@ -59,7 +65,9 @@ public class Animator {
     }
     
     public void removeAllFrames(){
-        list.removeAllFrames();
+        if(list != null){
+            list.removeAllFrames();
+        }
     }
     
     public boolean loop() {
@@ -84,8 +92,55 @@ public class Animator {
         return new GifFrame(image, delay);
     }
 
-    public static void main(String[] args) {
-        final String name = args[0];
+    public void loadNewAnimator(final GifFrame[] frames, final String[] args){
+            try{
+                //Gif.write(Arrays.asList(frames), true, new File(args[1]));
+                EventQueue.invokeLater(new Runnable() {
+
+                public void run() {
+                    new Animator(frames, args);
+                }
+            });
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+    }
+    
+    public GifFrame[] loadGif(String gifPath){
+        File file = new File(gifPath);
+        GifFrame[] gframes = new GifFrame[1];
+        
+        try {
+            if (file.getName().endsWith("gif")) {
+                removeAllFrames();
+                List<GifFrame> frames = Gif.read(file);
+                
+                gframes = new GifFrame[frames.size()];
+                for(int i = 0; i < gframes.length; i++){
+                    gframes[i] = frames.get(i);
+                }
+                list = new GifFrameList(gframes);
+                for (GifFrame frame : frames) {
+                    addGifFrame(frame);
+                }
+                
+                Gif.write(Arrays.asList(gframes), true, file);
+                return gframes;
+            } else {
+                GifFrame gf = createDemoGifFrame(size, size, "my", 500);
+                addGifFrame(gf);
+                gframes[0] = gf;
+                return gframes;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(list, ex, "Exception",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return gframes;
+    }
+    
+    public static void main(final String[] args){        
         try {
             final GifFrame[] frames = new GifFrame[] {
                 createDemoGifFrame(size, size, "my", 500),
@@ -98,7 +153,7 @@ public class Animator {
             EventQueue.invokeLater(new Runnable() {
 
                 public void run() {
-                    new Animator(frames, name);
+                    new Animator(frames, args);
                 }
             });
         } catch (Exception ex) {

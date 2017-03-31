@@ -83,6 +83,27 @@ public class Database {
 		return studentData;
 	}
 	
+        public String getGifPath(String username){
+            connect();
+
+            try{
+                    java.sql.Statement myStmt = connection.createStatement();
+
+                    ResultSet result = myStmt.executeQuery("select * from students");
+
+                    while(result.next()){
+                        if(result.getString("username").equals(username)){
+                            return result.getString("gifPath");
+                        }
+                    }
+            }catch(SQLException e){
+                    e.printStackTrace();
+            }
+
+            close();
+            return "";
+        }
+        
         //returns the result of a query i.e. get the username of a particular student
 	private ResultSet query(String myQuery){
 		connect();
@@ -174,16 +195,14 @@ public class Database {
 	private void connect(){
 		try{
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://" + InetAddress.getLocalHost().getHostAddress() + ":3306/" + Constants.CONNECTION_DATABASE_NAME, Constants.CONNECTION_USERNAME, Constants.CONNECTION_PASSWORD);
-			System.out.println("Established Connection");
+			connection = DriverManager.getConnection("jdbc:mysql://" + Constants.CONNECTION_URL + ":" + Constants.CONNECTION_DATABASE_PORT + "/" + Constants.CONNECTION_DATABASE_NAME, Constants.CONNECTION_USERNAME, Constants.CONNECTION_PASSWORD);
+                        System.out.println("Established Connection");
 			
 
 		}catch(SQLException e) {
 			
 			e.printStackTrace();
 		}catch(ClassNotFoundException e){
-                    e.printStackTrace();
-                }catch(UnknownHostException e){
                     e.printStackTrace();
                 }
 	}
